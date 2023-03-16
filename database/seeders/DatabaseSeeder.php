@@ -59,7 +59,7 @@ class DatabaseSeeder extends Seeder
     {
         \App\Models\User::factory()->create([
             'name' => 'Pascal Kremp',
-            'email' => 'pascal@carerockets.com',
+            'email' => 'pascal@test.com',
         ])->assignRole('Business-Owner');
     }
 
@@ -67,17 +67,17 @@ class DatabaseSeeder extends Seeder
     {
         \App\Models\User::factory()->create([
             'name' => 'Silvan',
-            'email' => 'silvan@carerockets.com',
+            'email' => 'silvan@test.com',
         ])->assignRole('Business-User');
 
         \App\Models\User::factory()->create([
             'name' => 'Nora',
-            'email' => 'nora@carerockets.com',
+            'email' => 'nora@test.com',
         ])->assignRole('Business-User');
 
         \App\Models\User::factory()->create([
             'name' => 'Sami',
-            'email' => 'sami@carerockets.com',
+            'email' => 'sami@test.com',
         ])->assignRole('Business-User');
     }
 }
