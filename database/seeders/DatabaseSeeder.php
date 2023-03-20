@@ -3,7 +3,10 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Campaign;
+use App\Models\Employer;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -18,7 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->createPermission();
         $this->createBusinessOwner();
         $this->createBusinessUsers();
-        $this->createTeams();
+        $this->createTeamsAndAssignUsers();
     }
 
     private function createRoles()
@@ -29,30 +32,19 @@ class DatabaseSeeder extends Seeder
 
     private function createPermission()
     {
-        Permission::create(['name' => 'create:employer']);
-        Permission::create(['name' => 'edit:employer']);
-        Permission::create(['name' => 'delete:employer']);
+        foreach (collect([Employer::class, Campaign::class]) as $class) {
+            foreach (collect(['create', 'edit', 'delete']) as $permission) {
+                $class = Str::camel(class_basename($class));
 
-        Permission::create(['name' => 'create:campaign']);
-        Permission::create(['name' => 'edit:campaign']);
-        Permission::create(['name' => 'delete:campaign']);
+                Permission::create(['name' => "{$permission}:everything:{$class}"]);
+                Permission::create(['name' => "{$permission}:owned:{$class}"]);
+                Permission::create(['name' => "{$permission}:ownedByTeamMember:{$class}"]);
+            }
+        }
 
-        Permission::create(['name' => 'edit:unlocked-contacts']);
-    }
-
-    private function createTeams()
-    {
-        \App\Models\Team::factory()->create([
-            'name' => 'Super Admin',
-        ])->users()->attach(1);
-
-        \App\Models\Team::factory()->create([
-            'name' => 'CSM',
-        ])->users()->attach([2, 3]);
-
-        \App\Models\Team::factory()->create([
-            'name' => 'Accounting',
-        ])->users()->attach(4);
+        Permission::create(['name' => 'edit:everything:unlockedContact']);
+        Permission::create(['name' => 'edit:owned:unlockedContact']);
+        Permission::create(['name' => 'edit:ownedByTeamMember:unlockedContact']);
     }
 
     private function createBusinessOwner()
@@ -79,5 +71,20 @@ class DatabaseSeeder extends Seeder
             'name' => 'Sami',
             'email' => 'sami@test.com',
         ])->assignRole('Business-User');
+    }
+
+    private function createTeamsAndAssignUsers()
+    {
+        \App\Models\Team::factory()->create([
+            'name' => 'Super Admin',
+        ])->users()->attach(1);
+
+        \App\Models\Team::factory()->create([
+            'name' => 'CSM',
+        ])->users()->attach([2, 3]);
+
+        \App\Models\Team::factory()->create([
+            'name' => 'Accounting',
+        ])->users()->attach(4);
     }
 }

@@ -8,6 +8,7 @@ class RoleController extends Controller
 {
     public function __invoke()
     {
-        return Role::all();
+        return Role::query()
+            ->get();
     }
 }

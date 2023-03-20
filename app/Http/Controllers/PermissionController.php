@@ -8,6 +8,7 @@ class PermissionController extends Controller
 {
     public function __invoke()
     {
-        return Permission::all();
+        return Permission::query()
+        ->get();
     }
 }

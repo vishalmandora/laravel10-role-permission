@@ -8,6 +8,8 @@ class TeamController extends Controller
 {
     public function __invoke()
     {
-        return Team::query()->with('users')->get();
+        return Team::query()
+            ->with('users')
+            ->get();
     }
 }
