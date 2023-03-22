@@ -13,7 +13,27 @@ class CampaignPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        if ($user->hasRole('Business-Owner')) {
+            return true;
+        }
+
+        $user->loadMissing('permissions');
+
+        $class = Str::camel(class_basename(Campaign::class));
+
+        if ($user->hasPermissionTo("view:branch-level:{$class}")) {
+            return true;
+        }
+
+        if ($user->hasPermissionTo("view:team-level:{$class}")) {
+            return true;
+        }
+
+        if ($user->hasPermissionTo("view:user-level:{$class}")) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -35,21 +55,22 @@ class CampaignPolicy
             return true;
         }
 
-        if ($user->hasRole('Business-User')) {
-            $user->loadMissing('permissions');
+        $user->loadMissing('permissions');
 
-            if ($user->hasPermissionTo("create:everything:{$class}")) {
-                return true;
-            }
+        if ($user->hasPermissionTo("create:branch-level:{$class}")) {
+            return true;
+        }
 
-            if ($user->hasPermissionTo("create:ownedByTeamMember:{$class}")) {
-                $user->loadMissing('teams');
+        if ($user->hasPermissionTo("create:team-level:{$class}")) {
+            return true;
+        }
 
-                $teams = $user->teams->pluck('name');
+        if ($user->hasPermissionTo("create:user-level:{$class}")) {
+            return true;
+        }
 
-                //        if in_array($user->id, )
-                return true;
-            }
+        if ($user->hasPermissionTo("create:none:{$class}")) {
+            return false;
         }
 
         return false;
@@ -60,30 +81,28 @@ class CampaignPolicy
      */
     public function update(User $user, Campaign $campaign): bool
     {
-        $class = Str::camel(class_basename($campaign));
+        $class = Str::camel(class_basename(Campaign::class));
 
         if ($user->hasRole('Business-Owner')) {
             return true;
         }
 
-        if ($user->hasRole('Business-User')) {
-            $user->loadMissing('permissions');
+        $user->loadMissing('permissions');
 
-            if ($user->hasPermissionTo("edit:everything:{$class}")) {
-                return true;
-            }
+        if ($user->hasPermissionTo("create:branch-level:{$class}")) {
+            return true;
+        }
 
-            if ($user->hasPermissionTo("edit:owned:{$class}") && $user->id === $campaign->owner_id) {
-                return true;
-            }
+        if ($user->hasPermissionTo("create:team-level:{$class}")) {
+            return true;
+        }
 
-            if ($user->hasPermissionTo("edit:ownedByTeamMember:{$class}")) {
-                $user->loadMissing('teams');
+        if ($user->hasPermissionTo("create:user-level:{$class}")) {
+            return $user->id === $campaign->owner_id;
+        }
 
-                $teams = $user->teams->pluck('name');
-
-                return true;
-            }
+        if ($user->hasPermissionTo("create:none:{$class}")) {
+            return false;
         }
 
         return false;
@@ -94,31 +113,28 @@ class CampaignPolicy
      */
     public function delete(User $user, Campaign $campaign): bool
     {
-        $class = Str::camel(class_basename($campaign));
+        $class = Str::camel(class_basename(Campaign::class));
 
         if ($user->hasRole('Business-Owner')) {
             return true;
         }
 
-        if ($user->hasRole('Business-User')) {
-            $user->loadMissing('permissions');
+        $user->loadMissing('permissions');
 
-            if ($user->hasPermissionTo("delete:everything:{$class}")) {
-                return true;
-            }
+        if ($user->hasPermissionTo("create:branch-level:{$class}")) {
+            return true;
+        }
 
-            if ($user->hasPermissionTo("delete:owned:{$class}") && $user->id === $campaign->owner_id) {
-                return true;
-            }
+        if ($user->hasPermissionTo("create:team-level:{$class}")) {
+            return true;
+        }
 
-            if ($user->hasPermissionTo("delete:ownedByTeamMember:{$class}")) {
-                $user->loadMissing('teams');
+        if ($user->hasPermissionTo("create:user-level:{$class}")) {
+            return $user->id === $campaign->owner_id;
+        }
 
-                $teams = $user->teams->pluck('name');
-
-                //        if in_array($user->id, )
-                return true;
-            }
+        if ($user->hasPermissionTo("create:none:{$class}")) {
+            return false;
         }
 
         return false;

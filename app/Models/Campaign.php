@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\CampaignScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,6 +11,13 @@ class Campaign extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new CampaignScope());
+    }
 
     public function owner()
     {

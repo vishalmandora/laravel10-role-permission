@@ -8,12 +8,18 @@ use Illuminate\Http\Request;
 class CampaignController extends Controller
 {
     /**
+     * Create the controller instance.
+     */
+    public function __construct()
+    {
+        $this->authorizeResource(Campaign::class, 'campaign');
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
     {
-//        $this->authorize('viewAny', auth()->user());
-
         return Campaign::query()
             ->with(['employer', 'owner', 'company'])
             ->get();
@@ -24,7 +30,6 @@ class CampaignController extends Controller
      */
     public function create()
     {
-        $this->authorize('create');
     }
 
     /**
@@ -32,7 +37,6 @@ class CampaignController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create');
     }
 
     /**
@@ -40,7 +44,6 @@ class CampaignController extends Controller
      */
     public function show(Campaign $campaign)
     {
-        $this->authorize('view', $campaign);
     }
 
     /**
@@ -48,7 +51,6 @@ class CampaignController extends Controller
      */
     public function edit(Campaign $campaign)
     {
-        $this->authorize('update', $campaign);
     }
 
     /**
@@ -56,7 +58,6 @@ class CampaignController extends Controller
      */
     public function update(Request $request, Campaign $campaign)
     {
-        $this->authorize('update', $campaign);
     }
 
     /**
@@ -64,6 +65,5 @@ class CampaignController extends Controller
      */
     public function destroy(Campaign $campaign)
     {
-        $this->authorize('delete', $campaign);
     }
 }

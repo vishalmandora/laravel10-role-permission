@@ -46,7 +46,7 @@ class DatabaseSeeder extends Seeder
             foreach (collect(['view', 'edit']) as $permission) {
                 $class = Str::camel(class_basename($class));
 
-                Permission::create(['name' => "{$permission}:organisation-level:{$class}"]);
+                Permission::create(['name' => "{$permission}:branch-level:{$class}"]);
                 Permission::create(['name' => "{$permission}:team-level:{$class}"]);
                 Permission::create(['name' => "{$permission}:user-level:{$class}"]);
                 Permission::create(['name' => "{$permission}:none:{$class}"]);
@@ -67,22 +67,46 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'User A',
             'email' => 'user_a@test.com',
-        ])->assignRole('Business-User');
+        ])->assignRole('Business-User')->givePermissionTo([
+            'view:branch-level:employer',
+            'edit:branch-level:employer',
+
+            'view:branch-level:campaign',
+            'edit:branch-level:campaign',
+        ]);
 
         User::factory()->create([
             'name' => 'User B',
             'email' => 'user_b@test.com',
-        ])->assignRole('Business-User');
+        ])->assignRole('Business-User')->givePermissionTo([
+            'view:branch-level:employer',
+            'edit:branch-level:employer',
+
+            'view:team-level:campaign',
+            'edit:team-level:campaign',
+        ]);
 
         User::factory()->create([
             'name' => 'User C',
             'email' => 'user_c@test.com',
-        ])->assignRole('Business-User');
+        ])->assignRole('Business-User')->givePermissionTo([
+            'view:branch-level:employer',
+            'edit:branch-level:employer',
+
+            'view:user-level:campaign',
+            'edit:user-level:campaign',
+        ]);
 
         User::factory()->create([
             'name' => 'User D',
             'email' => 'user_d@test.com',
-        ])->assignRole('Business-User');
+        ])->assignRole('Business-User')->givePermissionTo([
+            'view:branch-level:employer',
+            'edit:branch-level:employer',
+
+            'view:none:campaign',
+            'edit:none:campaign',
+        ]);
 
         User::factory()->create([
             'name' => 'User E',
@@ -113,23 +137,13 @@ class DatabaseSeeder extends Seeder
 
         $owner = $company->users()->role('Business-Owner')->first();
 
-        Employer::factory()->create([
-            'name' => 'Berlin',
-            'owner_id' => $owner->id,
-            'company_id' => $company->id,
-        ]);
-
-        Employer::factory()->create([
-            'name' => 'Munich',
-            'owner_id' => $owner->id,
-            'company_id' => $company->id,
-        ]);
-
-        Employer::factory()->create([
-            'name' => 'Wuppertal',
-            'owner_id' => $owner->id,
-            'company_id' => $company->id,
-        ]);
+        foreach (collect(['Berlin', 'Munich', 'Wuppertal']) as $employer) {
+            Employer::factory()->create([
+                'name' => $employer,
+                'owner_id' => $owner->id,
+                'company_id' => $company->id,
+            ]);
+        }
     }
 
     private function createTeams()

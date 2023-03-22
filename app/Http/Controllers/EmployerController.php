@@ -8,12 +8,18 @@ use Illuminate\Http\Request;
 class EmployerController extends Controller
 {
     /**
+     * Create the controller instance.
+     */
+    public function __construct()
+    {
+        $this->authorizeResource(Employer::class, 'employer');
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
     {
-//        $this->authorize('viewAny');
-
         return Employer::query()
             ->with(['company', 'owner', 'teams', 'campaigns', 'messageTemplates'])
             ->get();
@@ -24,7 +30,6 @@ class EmployerController extends Controller
      */
     public function create()
     {
-        $this->authorize('create');
     }
 
     /**
@@ -32,7 +37,6 @@ class EmployerController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create');
     }
 
     /**
@@ -40,7 +44,6 @@ class EmployerController extends Controller
      */
     public function show(Employer $employer)
     {
-        $this->authorize('view', $employer);
     }
 
     /**
@@ -48,7 +51,6 @@ class EmployerController extends Controller
      */
     public function edit(Employer $employer)
     {
-        $this->authorize('update', $employer);
     }
 
     /**
@@ -56,7 +58,6 @@ class EmployerController extends Controller
      */
     public function update(Request $request, Employer $employer)
     {
-        $this->authorize('update', $employer);
     }
 
     /**
@@ -64,6 +65,5 @@ class EmployerController extends Controller
      */
     public function destroy(Employer $employer)
     {
-        $this->authorize('delete', $employer);
     }
 }
