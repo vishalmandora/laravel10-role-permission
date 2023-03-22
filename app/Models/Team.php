@@ -11,13 +11,18 @@ class Team extends Model
 
     protected $guarded = [];
 
-    public function users()
-    {
-        return $this->belongsToMany(User::class);
-    }
-
     public function employer()
     {
         return $this->belongsTo(Employer::class);
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
     }
 }

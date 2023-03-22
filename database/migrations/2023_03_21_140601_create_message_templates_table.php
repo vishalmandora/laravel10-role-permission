@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
+            $table->unsignedBigInteger('owner_id');
+            $table->unsignedBigInteger('employer_id');
             $table->timestamps();
         });
     }

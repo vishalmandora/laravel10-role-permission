@@ -15,7 +15,7 @@ class EmployerController extends Controller
 //        $this->authorize('viewAny');
 
         return Employer::query()
-            ->with(['company', 'owner', 'teams', 'campaigns'])
+            ->with(['company', 'owner', 'teams', 'campaigns', 'messageTemplates'])
             ->get();
     }
 

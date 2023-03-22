@@ -16,14 +16,19 @@ class Employer extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function owner()
-    {
-        return $this->belongsTo(User::class, 'owner_id');
-    }
-
     public function teams()
     {
         return $this->hasMany(Team::class);
+    }
+
+    public function messageTemplates()
+    {
+        return $this->hasMany(MessageTemplate::class);
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'owner_id');
     }
 
     public function campaigns()

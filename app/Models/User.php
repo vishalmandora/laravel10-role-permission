@@ -44,6 +44,21 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function campaigns()
+    {
+        return $this->hasMany(Campaign::class, 'owner_id');
+    }
+
+    public function messageTemplates()
+    {
+        return $this->hasMany(MessageTemplate::class);
+    }
+
+    public function unlockedContacts()
+    {
+        return $this->hasMany(UnlockedContact::class);
+    }
+
     public function teams()
     {
         return $this->belongsToMany(Team::class);
@@ -52,10 +67,5 @@ class User extends Authenticatable
     public function companies()
     {
         return $this->belongsToMany(Company::class);
-    }
-
-    public function campaigns()
-    {
-        return $this->hasMany(Campaign::class, 'owner_id');
     }
 }

@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+//use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Campaign;
 use App\Models\Company;
 use App\Models\Employer;
+use App\Models\MessageTemplate;
 use App\Models\Team;
 use App\Models\UnlockedContact;
 use App\Models\User;
@@ -30,7 +31,7 @@ class DatabaseSeeder extends Seeder
         $this->createEmployers();
         $this->createTeams();
         $this->createCampaigns();
-//        $this->createTeamsAndAssignUsers();
+        $this->createMessageTemplates();
     }
 
     private function createRoles()
@@ -42,12 +43,12 @@ class DatabaseSeeder extends Seeder
     private function createPermission()
     {
         foreach (collect([Employer::class, Campaign::class, UnlockedContact::class]) as $class) {
-            foreach (collect(['create', 'view', 'edit', 'delete']) as $permission) {
+            foreach (collect(['view', 'edit']) as $permission) {
                 $class = Str::camel(class_basename($class));
 
-                Permission::create(['name' => "{$permission}:everything:{$class}"]);
-                Permission::create(['name' => "{$permission}:owned:{$class}"]);
-                Permission::create(['name' => "{$permission}:ownedByTeamMember:{$class}"]);
+                Permission::create(['name' => "{$permission}:organisation-level:{$class}"]);
+                Permission::create(['name' => "{$permission}:team-level:{$class}"]);
+                Permission::create(['name' => "{$permission}:user-level:{$class}"]);
                 Permission::create(['name' => "{$permission}:none:{$class}"]);
             }
         }
@@ -55,7 +56,7 @@ class DatabaseSeeder extends Seeder
 
     private function createBusinessOwner()
     {
-        \App\Models\User::factory()->create([
+        User::factory()->create([
             'name' => 'Pascal Kremp',
             'email' => 'pascal@test.com',
         ])->assignRole('Business-Owner');
@@ -63,37 +64,37 @@ class DatabaseSeeder extends Seeder
 
     private function createBusinessUsers()
     {
-        \App\Models\User::factory()->create([
+        User::factory()->create([
             'name' => 'User A',
             'email' => 'user_a@test.com',
         ])->assignRole('Business-User');
 
-        \App\Models\User::factory()->create([
+        User::factory()->create([
             'name' => 'User B',
             'email' => 'user_b@test.com',
         ])->assignRole('Business-User');
 
-        \App\Models\User::factory()->create([
+        User::factory()->create([
             'name' => 'User C',
             'email' => 'user_c@test.com',
         ])->assignRole('Business-User');
 
-        \App\Models\User::factory()->create([
+        User::factory()->create([
             'name' => 'User D',
             'email' => 'user_d@test.com',
         ])->assignRole('Business-User');
 
-        \App\Models\User::factory()->create([
+        User::factory()->create([
             'name' => 'User E',
             'email' => 'user_e@test.com',
         ])->assignRole('Business-User');
 
-        \App\Models\User::factory()->create([
+        User::factory()->create([
             'name' => 'User F',
             'email' => 'user_f@test.com',
         ])->assignRole('Business-User');
 
-        \App\Models\User::factory()->create([
+        User::factory()->create([
             'name' => 'User G',
             'email' => 'user_g@test.com',
         ])->assignRole('Business-User');
@@ -101,33 +102,33 @@ class DatabaseSeeder extends Seeder
 
     private function createCompany()
     {
-        $company = Company::factory()->create([
+        Company::factory()->create([
             'name' => 'Johanniter',
-        ]);
-
-        $userIds = User::query()->pluck('id')->toArray();
-
-        $company->users()->sync($userIds);
+        ])->users()->sync(User::query()->pluck('id')->toArray());
     }
 
     private function createEmployers()
     {
+        $company = Company::query()->first();
+
+        $owner = $company->users()->role('Business-Owner')->first();
+
         Employer::factory()->create([
             'name' => 'Berlin',
-            'owner_id' => User::first()->id,
-            'company_id' => Company::first()->id,
+            'owner_id' => $owner->id,
+            'company_id' => $company->id,
         ]);
 
         Employer::factory()->create([
             'name' => 'Munich',
-            'owner_id' => User::first()->id,
-            'company_id' => Company::first()->id,
+            'owner_id' => $owner->id,
+            'company_id' => $company->id,
         ]);
 
         Employer::factory()->create([
             'name' => 'Wuppertal',
-            'owner_id' => User::first()->id,
-            'company_id' => Company::first()->id,
+            'owner_id' => $owner->id,
+            'company_id' => $company->id,
         ]);
     }
 
@@ -168,61 +169,58 @@ class DatabaseSeeder extends Seeder
 
     private function createCampaigns()
     {
+        $company = Company::query()->first();
+
+        $owner = $company->users()->role('Business-Owner')->first();
+
         $employer = Employer::query()->where('name', 'Berlin')->first();
 
         Campaign::factory()->create([
-            'name' => 'Campaign 1',
+            'name' => 'Campaign 1 / Job Post 1',
             'employer_id' => $employer->id,
-            'owner_id' => User::first()->id,
-            'company_id' => Company::first()->id,
+            'owner_id' => $owner->id,
+            'company_id' => $company->id,
         ]);
     }
 
-    private function createTeamsAndAssignUsers()
+    private function createMessageTemplates()
     {
-        \App\Models\Team::factory()->create([
-            'name' => 'Super Admin',
-        ])->users()->attach(1);
+        $company = Company::query()->first();
 
-        \App\Models\Team::factory()->create([
-            'name' => 'CSM',
-        ])->users()->attach([2, 3]);
+        $owner = $company->users()->role('Business-Owner')->first();
 
-        \App\Models\Team::factory()->create([
-            'name' => 'Accounting',
-        ])->users()->attach(4);
-    }
+        $employer = Employer::query()->where('name', 'Berlin')->first();
 
-    private function createEmployersAndCampaigns()
-    {
-        $emp1 = Employer::factory()->create([
-            'name' => 'Employer 1',
-            'owner_id' => 1,
+        MessageTemplate::factory()->create([
+            'title' => 'Message Template 1',
+            'description' => 'Message Description 1',
+            'owner_id' => $owner->id,
+            'employer_id' => $employer->id,
         ]);
 
-        $campaign1 = Campaign::factory()->create([
-            'employer_id' => $emp1,
-            'name' => 'Campaign 1',
+        MessageTemplate::factory()->create([
+            'title' => 'Message Template 2',
+            'description' => 'Message Description 2',
+            'owner_id' => $owner->id,
+            'employer_id' => $employer->id,
         ]);
 
-        $campaign2 = Campaign::factory()->create([
-            'employer_id' => $emp1,
-            'name' => 'Campaign 2',
+        $employer = Employer::query()->where('name', 'Munich')->first();
+
+        MessageTemplate::factory()->create([
+            'title' => 'Message Template 3',
+            'description' => 'Message Description 3',
+            'owner_id' => $owner->id,
+            'employer_id' => $employer->id,
         ]);
 
-        $emp2 = Employer::factory()->create([
-            'name' => 'Employer 1',
-            'owner_id' => 2,
-        ]);
+        $employer = Employer::query()->where('name', 'Wuppertal')->first();
 
-        $campaign3 = Campaign::factory()->create([
-            'employer_id' => $emp2,
-            'name' => 'Campaign 3',
-        ]);
-
-        $campaign4 = Campaign::factory()->create([
-            'employer_id' => $emp2,
-            'name' => 'Campaign 4',
+        MessageTemplate::factory()->create([
+            'title' => 'Message Template 4',
+            'description' => 'Message Description 4',
+            'owner_id' => $owner->id,
+            'employer_id' => $employer->id,
         ]);
     }
 }
