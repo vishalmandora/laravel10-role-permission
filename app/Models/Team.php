@@ -26,13 +26,13 @@ class Team extends Model
         return $this->belongsToMany(User::class);
     }
 
-    public function sub_team()
-    {
-        return $this->belongsTo(self::class, 'id', 'parent_id');
-    }
-
-    public function parent_team()
-    {
-        return $this->belongsTo(self::class, 'parent_id', 'id');
-    }
+//    public function sub_team()
+//    {
+//        return $this->belongsTo(self::class, 'id', 'parent_id');
+//    }
+//
+//    public function parent_team()
+//    {
+//        return $this->belongsTo(self::class, 'parent_id', 'id');
+//    }
 }

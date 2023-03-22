@@ -27,13 +27,11 @@ class CampaignScope implements Scope
             }
 
             if (auth()->user()->hasPermissionTo("view:team-level:{$class}")) {
-                $builder->whereHas('employer', function ($builder) {
-                    $builder->whereHas('teams', function ($query) {
-                        $query->whereHas('sub_team', function ($query) {
-                            $query->whereIn('id', auth()->user()->teams()->select('id'));
-                        });
-                    });
-                });
+//                $builder->whereHas('employer', function ($builder) use ($model) {
+//                    $builder->whereHas('teams', function ($query) use ($model) {
+//                        $query->where('id', $model->owner_id); // get campaign's owner here
+//                    });
+//                });
             }
 
             if (auth()->user()->hasPermissionTo("view:user-level:{$class}")) {
