@@ -12,9 +12,10 @@ class CampaignController extends Controller
      */
     public function index()
     {
-        $this->authorize('viewAny');
+//        $this->authorize('viewAny', auth()->user());
 
         return Campaign::query()
+            ->with(['employer', 'owner', 'company'])
             ->get();
     }
 

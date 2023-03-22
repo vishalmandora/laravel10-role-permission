@@ -9,7 +9,7 @@ class UserController extends Controller
     public function __invoke()
     {
         return User::query()
-            ->with('roles', 'permissions', 'teams')
+            ->with(['roles', 'permissions', 'teams', 'companies', 'campaigns'])
             ->get();
     }
 }

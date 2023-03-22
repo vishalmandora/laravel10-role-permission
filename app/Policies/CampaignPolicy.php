@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Campaign;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Str;
 
 class CampaignPolicy
@@ -37,7 +36,6 @@ class CampaignPolicy
         }
 
         if ($user->hasRole('Business-User')) {
-
             $user->loadMissing('permissions');
 
             if ($user->hasPermissionTo("create:everything:{$class}")) {
@@ -45,7 +43,6 @@ class CampaignPolicy
             }
 
             if ($user->hasPermissionTo("create:ownedByTeamMember:{$class}")) {
-
                 $user->loadMissing('teams');
 
                 $teams = $user->teams->pluck('name');
@@ -53,7 +50,6 @@ class CampaignPolicy
                 //        if in_array($user->id, )
                 return true;
             }
-
         }
 
         return false;
@@ -71,7 +67,6 @@ class CampaignPolicy
         }
 
         if ($user->hasRole('Business-User')) {
-
             $user->loadMissing('permissions');
 
             if ($user->hasPermissionTo("edit:everything:{$class}")) {
@@ -83,14 +78,12 @@ class CampaignPolicy
             }
 
             if ($user->hasPermissionTo("edit:ownedByTeamMember:{$class}")) {
-
                 $user->loadMissing('teams');
 
                 $teams = $user->teams->pluck('name');
 
                 return true;
             }
-
         }
 
         return false;
@@ -108,7 +101,6 @@ class CampaignPolicy
         }
 
         if ($user->hasRole('Business-User')) {
-
             $user->loadMissing('permissions');
 
             if ($user->hasPermissionTo("delete:everything:{$class}")) {
@@ -120,7 +112,6 @@ class CampaignPolicy
             }
 
             if ($user->hasPermissionTo("delete:ownedByTeamMember:{$class}")) {
-
                 $user->loadMissing('teams');
 
                 $teams = $user->teams->pluck('name');
@@ -128,7 +119,6 @@ class CampaignPolicy
                 //        if in_array($user->id, )
                 return true;
             }
-
         }
 
         return false;

@@ -48,4 +48,14 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Team::class);
     }
+
+    public function companies()
+    {
+        return $this->belongsToMany(Company::class);
+    }
+
+    public function campaigns()
+    {
+        return $this->hasMany(Campaign::class, 'owner_id');
+    }
 }

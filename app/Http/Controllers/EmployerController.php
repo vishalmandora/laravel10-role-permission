@@ -12,9 +12,10 @@ class EmployerController extends Controller
      */
     public function index()
     {
-        $this->authorize('viewAny');
+//        $this->authorize('viewAny');
 
         return Employer::query()
+            ->with(['company', 'owner', 'teams', 'campaigns'])
             ->get();
     }
 

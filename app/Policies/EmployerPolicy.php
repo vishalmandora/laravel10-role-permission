@@ -36,7 +36,6 @@ class EmployerPolicy
         }
 
         if ($user->hasRole('Business-User')) {
-
             $user->loadMissing('permissions');
 
             if ($user->hasPermissionTo("create:everything:{$class}")) {
@@ -48,7 +47,6 @@ class EmployerPolicy
 //            }
 
             if ($user->hasPermissionTo("create:ownedByTeamMember:{$class}")) {
-
                 $user->loadMissing('teams');
 
                 $teams = $user->teams->pluck('name');
@@ -56,7 +54,6 @@ class EmployerPolicy
                 //        if in_array($user->id, )
                 return true;
             }
-
         }
 
         return false;
@@ -74,7 +71,6 @@ class EmployerPolicy
         }
 
         if ($user->hasRole('Business-User')) {
-
             //get the permission of the user.
             $user->loadMissing('permissions');
 
@@ -91,7 +87,6 @@ class EmployerPolicy
 
             //    edit:ownedByTeamMember:employer
             if ($user->hasPermissionTo("edit:ownedByTeamMember:{$class}")) {
-
                 //   get the teams of the user.
                 $user->loadMissing('teams');
 
@@ -101,7 +96,6 @@ class EmployerPolicy
                 //        if in_array($user->id, )
                 return true;
             }
-
         }
 
         return false;
@@ -119,7 +113,6 @@ class EmployerPolicy
         }
 
         if ($user->hasRole('Business-User')) {
-
             $user->loadMissing('permissions');
 
             if ($user->hasPermissionTo("delete:everything:{$class}")) {
@@ -131,7 +124,6 @@ class EmployerPolicy
             }
 
             if ($user->hasPermissionTo("delete:ownedByTeamMember:{$class}")) {
-
                 $user->loadMissing('teams');
 
                 $teams = $user->teams->pluck('name');
@@ -139,7 +131,6 @@ class EmployerPolicy
                 //        if in_array($user->id, )
                 return true;
             }
-
         }
 
         return false;
