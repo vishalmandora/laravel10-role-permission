@@ -13,7 +13,7 @@ class EmployerPolicy
      */
     public function viewAny(User $user): bool
     {
-        if ($user->hasRole('Business-Owner')) {
+        if ($user->hasRole(ROLE_BUSINESS_OWNER)) {
             return true;
         }
 
@@ -33,7 +33,7 @@ class EmployerPolicy
      */
     public function view(User $user, Employer $employer): bool
     {
-        if ($user->hasRole('Business-Owner')) {
+        if ($user->hasRole(ROLE_BUSINESS_OWNER)) {
             return true;
         }
 
@@ -53,7 +53,7 @@ class EmployerPolicy
      */
     public function create(User $user): bool
     {
-        if ($user->hasRole('Business-Owner')) {
+        if ($user->hasRole(ROLE_BUSINESS_OWNER)) {
             return true;
         }
 
@@ -67,7 +67,7 @@ class EmployerPolicy
     {
         $class = Str::camel(class_basename($employer));
 
-        if ($user->hasRole('Business-Owner')) {
+        if ($user->hasRole(ROLE_BUSINESS_OWNER)) {
             return true;
         }
 
@@ -87,7 +87,7 @@ class EmployerPolicy
     {
         $class = Str::camel(class_basename($employer));
 
-        if ($user->hasRole('Business-Owner')) {
+        if ($user->hasRole(ROLE_BUSINESS_OWNER)) {
             return true;
         }
 

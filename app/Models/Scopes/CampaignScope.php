@@ -17,7 +17,7 @@ class CampaignScope implements Scope
     {
         $class = Str::camel(class_basename(Campaign::class));
 
-        if (auth()->user() && auth()->user()->hasRole('Business-User')) {
+        if (auth()->user() && auth()->user()->hasRole(ROLE_BUSINESS_USER)) {
             if (auth()->user()->hasPermissionTo("view:branch-level:{$class}")) {
                 $builder->whereHas('employer', function ($builder) {
                     $builder->whereHas('teams', function ($query) {

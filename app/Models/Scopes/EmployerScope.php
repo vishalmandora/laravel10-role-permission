@@ -17,7 +17,7 @@ class EmployerScope implements Scope
     {
         $class = Str::camel(class_basename(Employer::class));
 
-        if (auth()->user() && auth()->user()->hasRole('Business-User')) {
+        if (auth()->user() && auth()->user()->hasRole(ROLE_BUSINESS_USER)) {
             if (auth()->user()->hasPermissionTo("view:branch-level:{$class}")) {
                 $builder->whereHas('teams', function ($query) {
                     $query->whereIn('id', auth()->user()->teams()->select('id'));

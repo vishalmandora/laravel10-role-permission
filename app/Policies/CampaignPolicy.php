@@ -13,7 +13,7 @@ class CampaignPolicy
      */
     public function viewAny(User $user): bool
     {
-        if ($user->hasRole('Business-Owner')) {
+        if ($user->hasRole(ROLE_BUSINESS_OWNER)) {
             return true;
         }
 
@@ -43,7 +43,7 @@ class CampaignPolicy
     {
         $class = Str::camel(class_basename(Campaign::class));
 
-        if ($user->hasRole('Business-Owner')) {
+        if ($user->hasRole(ROLE_BUSINESS_OWNER)) {
             return true;
         }
 
@@ -75,7 +75,7 @@ class CampaignPolicy
     {
         $class = Str::camel(class_basename(Campaign::class));
 
-        if ($user->hasRole('Business-Owner')) {
+        if ($user->hasRole(ROLE_BUSINESS_OWNER)) {
             return true;
         }
 
@@ -107,7 +107,7 @@ class CampaignPolicy
     {
         $class = Str::camel(class_basename(Campaign::class));
 
-        if ($user->hasRole('Business-Owner')) {
+        if ($user->hasRole(ROLE_BUSINESS_OWNER)) {
             return true;
         }
 

@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
 
         $this->createBusinessOwner();
         $this->createBusinessUsers();
+        $this->createContacts();
         $this->createCompany();
         $this->createEmployers();
         $this->createTeams();
@@ -37,8 +38,9 @@ class DatabaseSeeder extends Seeder
 
     private function createRoles()
     {
-        Role::create(['name' => 'Business-Owner']);
-        Role::create(['name' => 'Business-User']);
+        Role::create(['name' => ROLE_BUSINESS_OWNER]);
+        Role::create(['name' => ROLE_BUSINESS_USER]);
+        Role::create(['name' => ROLE_CONTACT]);
     }
 
     private function createPermission()
@@ -84,7 +86,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Pascal Kremp',
             'email' => 'pascal@test.com',
-        ])->assignRole('Business-Owner');
+        ])->assignRole(ROLE_BUSINESS_OWNER);
     }
 
     private function createBusinessUsers()
@@ -92,7 +94,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'User A',
             'email' => 'user_a@test.com',
-        ])->assignRole('Business-User')->givePermissionTo([
+        ])->assignRole(ROLE_BUSINESS_USER)->givePermissionTo([
             'view:branch-level:employer',
             'edit:branch-level:employer',
 
@@ -108,7 +110,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'User B',
             'email' => 'user_b@test.com',
-        ])->assignRole('Business-User')->givePermissionTo([
+        ])->assignRole(ROLE_BUSINESS_USER)->givePermissionTo([
             'view:branch-level:employer',
             'edit:branch-level:employer',
 
@@ -124,7 +126,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'User C',
             'email' => 'user_c@test.com',
-        ])->assignRole('Business-User')->givePermissionTo([
+        ])->assignRole(ROLE_BUSINESS_USER)->givePermissionTo([
             'view:branch-level:employer',
             'edit:branch-level:employer',
 
@@ -138,7 +140,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'User D',
             'email' => 'user_d@test.com',
-        ])->assignRole('Business-User')->givePermissionTo([
+        ])->assignRole(ROLE_BUSINESS_USER)->givePermissionTo([
             'view:branch-level:employer',
             'edit:branch-level:employer',
 
@@ -150,17 +152,35 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'User E',
             'email' => 'user_e@test.com',
-        ])->assignRole('Business-User');
+        ])->assignRole(ROLE_BUSINESS_USER);
 
         User::factory()->create([
             'name' => 'User F',
             'email' => 'user_f@test.com',
-        ])->assignRole('Business-User');
+        ])->assignRole(ROLE_BUSINESS_USER);
 
         User::factory()->create([
             'name' => 'User G',
             'email' => 'user_g@test.com',
-        ])->assignRole('Business-User');
+        ])->assignRole(ROLE_BUSINESS_USER);
+    }
+
+    public function createContacts()
+    {
+        User::factory()->create([
+            'name' => 'Virendra',
+            'email' => 'virendra@test.com',
+        ])->assignRole(ROLE_CONTACT);
+
+        User::factory()->create([
+            'name' => 'Dipak',
+            'email' => 'dipak@test.com',
+        ])->assignRole(ROLE_CONTACT);
+
+        User::factory()->create([
+            'name' => 'Nirav',
+            'email' => 'nirav@test.com',
+        ])->assignRole(ROLE_CONTACT);
     }
 
     private function createCompany()
@@ -174,7 +194,7 @@ class DatabaseSeeder extends Seeder
     {
         $company = Company::query()->first();
 
-        $owner = $company->users()->role('Business-Owner')->first();
+        $owner = $company->users()->role(ROLE_BUSINESS_OWNER)->first();
 
         foreach (collect(['Berlin', 'Munich', 'Wuppertal']) as $employer) {
             Employer::factory()->create([
@@ -224,7 +244,7 @@ class DatabaseSeeder extends Seeder
     {
         $company = Company::query()->first();
 
-        $owner = $company->users()->role('Business-Owner')->first();
+        $owner = $company->users()->role(ROLE_BUSINESS_OWNER)->first();
 
         $employer = Employer::query()->where('name', 'Berlin')->first();
 
@@ -240,7 +260,7 @@ class DatabaseSeeder extends Seeder
     {
         $company = Company::query()->first();
 
-        $owner = $company->users()->role('Business-Owner')->first();
+        $owner = $company->users()->role(ROLE_BUSINESS_OWNER)->first();
 
         $employer = Employer::query()->where('name', 'Berlin')->first();
 

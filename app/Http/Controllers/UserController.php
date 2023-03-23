@@ -16,14 +16,14 @@ class UserController extends Controller
     public function owners()
     {
         return User::query()
-            ->role('Business-Owner')
+            ->role(ROLE_BUSINESS_OWNER)
             ->get();
     }
 
     public function users()
     {
         return User::query()
-            ->role('Business-User')
+            ->role(ROLE_BUSINESS_USER)
             ->get();
     }
 }
