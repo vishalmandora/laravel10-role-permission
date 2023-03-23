@@ -21,15 +21,7 @@ class CampaignPolicy
 
         $class = Str::camel(class_basename(Campaign::class));
 
-        if ($user->hasPermissionTo("view:branch-level:{$class}")) {
-            return true;
-        }
-
-        if ($user->hasPermissionTo("view:team-level:{$class}")) {
-            return true;
-        }
-
-        if ($user->hasPermissionTo("view:user-level:{$class}")) {
+        if ($user->hasPermissionTo("view:branch-level:{$class}") || $user->hasPermissionTo("view:team-level:{$class}") || $user->hasPermissionTo("view:user-level:{$class}")) {
             return true;
         }
 
@@ -57,19 +49,19 @@ class CampaignPolicy
 
         $user->loadMissing('permissions');
 
-        if ($user->hasPermissionTo("create:branch-level:{$class}")) {
+        if ($user->hasPermissionTo("edit:branch-level:{$class}")) {
             return true;
         }
 
-        if ($user->hasPermissionTo("create:team-level:{$class}")) {
+        if ($user->hasPermissionTo("edit:team-level:{$class}")) {
             return true;
         }
 
-        if ($user->hasPermissionTo("create:user-level:{$class}")) {
+        if ($user->hasPermissionTo("edit:user-level:{$class}")) {
             return true;
         }
 
-        if ($user->hasPermissionTo("create:none:{$class}")) {
+        if ($user->hasPermissionTo("edit:none:{$class}")) {
             return false;
         }
 
@@ -89,19 +81,19 @@ class CampaignPolicy
 
         $user->loadMissing('permissions');
 
-        if ($user->hasPermissionTo("create:branch-level:{$class}")) {
+        if ($user->hasPermissionTo("edit:branch-level:{$class}")) {
             return true;
         }
 
-        if ($user->hasPermissionTo("create:team-level:{$class}")) {
+        if ($user->hasPermissionTo("edit:team-level:{$class}")) {
             return true;
         }
 
-        if ($user->hasPermissionTo("create:user-level:{$class}")) {
+        if ($user->hasPermissionTo("edit:user-level:{$class}")) {
             return $user->id === $campaign->owner_id;
         }
 
-        if ($user->hasPermissionTo("create:none:{$class}")) {
+        if ($user->hasPermissionTo("edit:none:{$class}")) {
             return false;
         }
 
@@ -121,19 +113,19 @@ class CampaignPolicy
 
         $user->loadMissing('permissions');
 
-        if ($user->hasPermissionTo("create:branch-level:{$class}")) {
+        if ($user->hasPermissionTo("edit:branch-level:{$class}")) {
             return true;
         }
 
-        if ($user->hasPermissionTo("create:team-level:{$class}")) {
+        if ($user->hasPermissionTo("edit:team-level:{$class}")) {
             return true;
         }
 
-        if ($user->hasPermissionTo("create:user-level:{$class}")) {
+        if ($user->hasPermissionTo("edit:user-level:{$class}")) {
             return $user->id === $campaign->owner_id;
         }
 
-        if ($user->hasPermissionTo("create:none:{$class}")) {
+        if ($user->hasPermissionTo("edit:none:{$class}")) {
             return false;
         }
 

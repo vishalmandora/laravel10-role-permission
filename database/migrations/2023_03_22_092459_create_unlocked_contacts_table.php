@@ -13,12 +13,20 @@ return new class extends Migration
     {
         Schema::create('unlocked_contacts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('campaign_id')->nullable();
+            $table->unsignedBigInteger('campaign_id')->nullable(); //optional
             $table->unsignedBigInteger('employer_id')->nullable(); //optional
             $table->unsignedBigInteger('contact_id');
             $table->unsignedBigInteger('company_id')->nullable();
             $table->unsignedBigInteger('owner_id')->nullable();
             $table->timestamps();
+
+            //TODO: Locations from where user can Unlocked themselves
+            //Job offer from list
+            //Sent job offers
+            //From list of Campaigns
+            //Company page Unlocked (1-click apply)
+            //Direct message
+            //Manual unlocked ??? Employer_ID/Campaign_Id
         });
     }
 

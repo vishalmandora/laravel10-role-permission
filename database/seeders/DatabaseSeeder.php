@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 //use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\ActiveSourcingRequest;
 use App\Models\Campaign;
 use App\Models\Company;
 use App\Models\Employer;
@@ -42,13 +43,37 @@ class DatabaseSeeder extends Seeder
 
     private function createPermission()
     {
-        foreach (collect([Employer::class, Campaign::class, UnlockedContact::class]) as $class) {
+        foreach (collect([Employer::class]) as $class) {
+            foreach (collect(['view', 'edit']) as $permission) {
+                $class = Str::camel(class_basename($class));
+
+                Permission::create(['name' => "{$permission}:branch-level:{$class}"]);
+
+                if ($permission == 'edit') {
+                    Permission::create(['name' => "{$permission}:none:{$class}"]);
+                }
+            }
+        }
+
+        foreach (collect([Campaign::class, UnlockedContact::class]) as $class) {
             foreach (collect(['view', 'edit']) as $permission) {
                 $class = Str::camel(class_basename($class));
 
                 Permission::create(['name' => "{$permission}:branch-level:{$class}"]);
                 Permission::create(['name' => "{$permission}:team-level:{$class}"]);
                 Permission::create(['name' => "{$permission}:user-level:{$class}"]);
+
+                if (($class == Str::camel(class_basename(Campaign::class)) && $permission == 'edit') || $class == Str::camel(class_basename(UnlockedContact::class))) {
+                    Permission::create(['name' => "{$permission}:none:{$class}"]);
+                }
+            }
+        }
+
+        foreach (collect([ActiveSourcingRequest::class]) as $class) {
+            foreach (collect(['write']) as $permission) {
+                $class = Str::camel(class_basename($class));
+
+                Permission::create(['name' => "{$permission}:all:{$class}"]);
                 Permission::create(['name' => "{$permission}:none:{$class}"]);
             }
         }
@@ -73,6 +98,11 @@ class DatabaseSeeder extends Seeder
 
             'view:branch-level:campaign',
             'edit:branch-level:campaign',
+
+            'view:branch-level:unlockedContact',
+            'edit:branch-level:unlockedContact',
+
+            'write:all:activeSourcingRequest',
         ]);
 
         User::factory()->create([
@@ -84,6 +114,11 @@ class DatabaseSeeder extends Seeder
 
             'view:team-level:campaign',
             'edit:team-level:campaign',
+
+            'view:team-level:unlockedContact',
+            'edit:team-level:unlockedContact',
+
+            'write:none:activeSourcingRequest',
         ]);
 
         User::factory()->create([
@@ -95,6 +130,9 @@ class DatabaseSeeder extends Seeder
 
             'view:user-level:campaign',
             'edit:user-level:campaign',
+
+            'view:user-level:unlockedContact',
+            'edit:user-level:unlockedContact',
         ]);
 
         User::factory()->create([
@@ -104,8 +142,9 @@ class DatabaseSeeder extends Seeder
             'view:branch-level:employer',
             'edit:branch-level:employer',
 
-            'view:none:campaign',
             'edit:none:campaign',
+
+            'edit:none:unlockedContact',
         ]);
 
         User::factory()->create([
