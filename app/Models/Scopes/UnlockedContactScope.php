@@ -2,25 +2,29 @@
 
 namespace App\Models\Scopes;
 
-use App\Models\Campaign;
+use App\Models\UnlockedContact;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Support\Str;
 
-class CampaignScope implements Scope
+class UnlockedContactScope implements Scope
 {
     /**
      * Apply the scope to a given Eloquent query builder.
      */
     public function apply(Builder $builder, Model $model): void
     {
-        $class = Str::camel(class_basename(Campaign::class));
+        $class = Str::camel(class_basename(UnlockedContact::class));
 
         if (auth()->user() && auth()->user()->hasRole(ROLE_BUSINESS_USER)) {
             if (auth()->user()->hasPermissionTo("view:branch-level:{$class}")) {
-                $builder->whereHas('employer', function ($builder) {
-                    $builder->whereHas('teams', function ($query) {
+                $builder->where(function ($query) {
+                    $query->whereNotNull('employer_id')->whereHas('employer.teams', function ($query) {
+                        $query->whereIn('id', auth()->user()->teams()->select('id'));
+                    });
+
+                    $query->orWhereNotNull('campaign_id')->whereHas('campaign.employer.teams', function ($query) {
                         $query->whereIn('id', auth()->user()->teams()->select('id'));
                     });
                 });

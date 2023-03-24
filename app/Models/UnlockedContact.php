@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\UnlockedContactScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UnlockedContact extends Model
 {
@@ -11,27 +13,34 @@ class UnlockedContact extends Model
 
     protected $guarded = [];
 
-    public function campaign() //optional
+    protected static function boot()
     {
-        return $this->belongsTo(User::class, 'owner_id');
+        parent::boot();
+
+        static::addGlobalScope(new UnlockedContactScope());
     }
 
-    public function employer() //optional
+    public function campaign(): BelongsTo //optional
+    {
+        return $this->belongsTo(Campaign::class);
+    }
+
+    public function employer(): BelongsTo //optional
     {
         return $this->belongsTo(Employer::class);
     }
 
-    public function contact()
+    public function contact(): BelongsTo
     {
         return $this->belongsTo(User::class, 'contact_id');
     }
 
-    public function company()
+    public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
     }
 
-    public function owner()
+    public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id');
     }

@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
         $this->createTeams();
         $this->createCampaigns();
         $this->createMessageTemplates();
+        $this->createUnlockedContacts();
     }
 
     private function createRoles()
@@ -295,5 +296,20 @@ class DatabaseSeeder extends Seeder
             'owner_id' => $owner->id,
             'employer_id' => $employer->id,
         ]);
+    }
+
+    private function createUnlockedContacts()
+    {
+        $campaign = Campaign::query()->first();
+
+        foreach (User::query()->role(ROLE_CONTACT)->get() as $user) {
+            UnlockedContact::factory()->create([
+                'campaign_id' => $campaign->id,
+                'employer_id' => $campaign->employer_id,
+                'contact_id' => $user->id,
+                'company_id' => $campaign->company_id,
+                'owner_id' => $campaign->owner_id,
+            ]);
+        }
     }
 }

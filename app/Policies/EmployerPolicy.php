@@ -77,6 +77,10 @@ class EmployerPolicy
             return true;
         }
 
+        if ($user->hasPermissionTo("edit:none:{$class}")) {
+            return false;
+        }
+
         return false;
     }
 
@@ -95,6 +99,10 @@ class EmployerPolicy
 
         if ($user->hasPermissionTo("edit:branch-level:{$class}")) {
             return true;
+        }
+
+        if ($user->hasPermissionTo("edit:none:{$class}")) {
+            return false;
         }
 
         return false;

@@ -21,7 +21,15 @@ class CampaignPolicy
 
         $class = Str::camel(class_basename(Campaign::class));
 
-        if ($user->hasPermissionTo("view:branch-level:{$class}") || $user->hasPermissionTo("view:team-level:{$class}") || $user->hasPermissionTo("view:user-level:{$class}")) {
+        if ($user->hasPermissionTo("view:branch-level:{$class}")) {
+            return true;
+        }
+
+        if ($user->hasPermissionTo("view:team-level:{$class}")) {
+            return true;
+        }
+
+        if ($user->hasPermissionTo("view:user-level:{$class}")) {
             return true;
         }
 
@@ -33,7 +41,27 @@ class CampaignPolicy
      */
     public function view(User $user, Campaign $campaign): bool
     {
-        return true;
+        if ($user->hasRole(ROLE_BUSINESS_OWNER)) {
+            return true;
+        }
+
+        $user->loadMissing('permissions');
+
+        $class = Str::camel(class_basename(Campaign::class));
+
+        if ($user->hasPermissionTo("view:branch-level:{$class}")) {
+            return true;
+        }
+
+        if ($user->hasPermissionTo("view:team-level:{$class}")) {
+            return true;
+        }
+
+        if ($user->hasPermissionTo("view:user-level:{$class}")) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

@@ -39,7 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('campaigns', App\Http\Controllers\CampaignController::class);
 //    Route::resource('message-templates', App\Http\Controllers\MessageTemplateController::class);
     Route::get('teams', App\Http\Controllers\TeamController::class);
-//    Route::get('unlocked-contacts', App\Http\Controllers\UnlockedContact::class);
+    Route::get('unlocked-contacts', App\Http\Controllers\UnlockedContactController::class);
 
     Route::get('users', App\Http\Controllers\UserController::class);
     Route::get('business-owners', [App\Http\Controllers\UserController::class, 'owners']);
